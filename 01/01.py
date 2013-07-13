@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #http://www.pythonchallenge.com/pc/def/map.html
 import sys
-import math
 from string import maketrans
 
 INCHARS = 'abcdefghijklmnopqrstuvwxyz'
