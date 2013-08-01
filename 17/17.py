@@ -33,6 +33,8 @@ def main(args=None):
         match = MATCHER.findall(text)
     # print text
     print bz2.decompress(''.join(INFO))
+    cookies = dict(info='the+flowers+are+on+their+way')
+    print requests.get('http://www.pythonchallenge.com/pc/stuff/violin.php', cookies=cookies).text
 
 
 if __name__ == '__main__':
