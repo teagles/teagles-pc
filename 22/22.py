@@ -4,6 +4,7 @@ import sys
 import requests
 import Image
 import ImageDraw
+import functools
 
 IMAGE_URL = 'http://butter:fly@www.pythonchallenge.com/pc/hex/white.gif'
 FNAME = '22/white.gif'
@@ -25,27 +26,27 @@ class FrameTurtle:
         self.y = self.y + y_inc
         self.im_draw.point((self.x, self.y), fill='black')
 
-    def reset(self, x_inc=0, y_inc=0):
+    def reset(self):
         self.show()
         self.im_buffer = Image.new("RGB", (self.width, self.height), "white")
         self.im_draw = ImageDraw.Draw(self.im_buffer)
         self.x = self.def_x
         self.y = self.def_y
-        self.draw(x_inc, y_inc)
+        self.draw(0, 0)
 
-    T9 = {(98, 98): (draw, (-1, -1)),
-          (100, 98): (draw, (0, -1)),
-          (102, 98): (draw, (1, -1)),
-          (98, 100): (draw, (-1, 0)),
-          (100, 100): (reset, (0, 0)),
-          (102, 100): (draw, (1, 0)),
-          (98, 102): (draw, (-1, 1)),
-          (100, 102): (draw, (0, 1)),
-          (102, 102): (draw, (1, 1)),
+    T9 = {(98, 98): functools.partial(draw, x_inc=-1, y_inc=-1),
+          (100, 98): functools.partial(draw, x_inc=0, y_inc=-1),
+          (102, 98): functools.partial(draw, x_inc=1, y_inc=-1),
+          (98, 100): functools.partial(draw, x_inc=-1, y_inc=0),
+          (100, 100): reset,
+          (102, 100): functools.partial(draw, x_inc=1, y_inc=0),
+          (98, 102): functools.partial(draw, x_inc=-1, y_inc=1),
+          (100, 102): functools.partial(draw, x_inc=0, y_inc=1),
+          (102, 102): functools.partial(draw, x_inc=1, y_inc=1),
           }
 
     def action(self, p_x, p_y):
-        FrameTurtle.T9[(p_x, p_y)][0](self, *FrameTurtle.T9[(p_x, p_y)][1])
+        FrameTurtle.T9[(p_x, p_y)](self)
 
     def show(self):
         if self.im_buffer is not None:
@@ -60,7 +61,7 @@ def iter_frames(im):
             yield im.load()
             i = i + 1
     except EOFError:
-        None
+        pass
 
 
 def action_not_black(pixels, turtle):
