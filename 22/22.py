@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # http://butter:fly@www.pythonchallenge.com/pc/hex/copper.html
+import os
 import sys
 import requests
 import Image
@@ -75,8 +76,9 @@ def action_not_black(pixels, turtle):
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
-    with open(FNAME, 'wb') as f:
-        f.write(requests.get(IMAGE_URL).content)
+    if not os.path.isfile(FNAME):
+        with open(FNAME, 'wb') as f:
+            f.write(requests.get(IMAGE_URL).content)
     white = Image.open(FNAME)
     turtle = FrameTurtle(100, 100, 200, 200)
     for im in iter_frames(white):
